@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Client-Server Chat</h1>
+    <form action="/chat" method="post" id="clientForm">
+        <input type="text" name="clientMsg" placeholder="Enter your message" required>
+        <button type="submit">Send Message</button>
+    </form>
+
+    <h2>Messages</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Client Says</th>
+                <th>Server Responds</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let i = 0; i < Math.max(msg.length, serverMsg.length); i++) { %>
+                <tr>
+                    <% if (i === 0) { %>
+                        <td></td>
+                        <td><%= serverMsg[i] || '' %></td>
+                    <% } else { %>
+                        <% if (flag===1) { %>
+                            <td><%= msg[i] || '' %></td>
+                            <td><%= serverMsg[i] || 'server responds something ' %></td>
+                        <% } else { %>
+                            <td><%= msg[i] || '' %></td>
+                            <td><%= 'server not connected' %></td>
+                        <% } %>                         
+                    <% } %>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    
+    <button id="con">Connect to server</button>
+    <button id="disCon">Disconnect server</button>
+
+
+    <script>
+        document.getElementById('clientForm').addEventListener('submit',(e)=>{
+            e.preventDefault();
+            alert('Message sent!');
+            e.target.submit();
+        });
+
+        document.getElementById('con').addEventListener('click',()=>{
+            fetch('/connect',{
+                method: 'POST',
+            })
+            .then(()=>{
+                alert('server connected');
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
+        });
+
+        document.getElementById('disCon').addEventListener('click',()=>{
+            fetch('/disconnect',{
+                method: 'POST',
+            })
+            // .then((response)=>{response.json()})
+            .then(()=>{
+                alert('disconnected from server');
+            })
+            .catch((err)=>{
+                console.log(err)
+            });
+        })
+
+    </script>
+</body>
+</html>
